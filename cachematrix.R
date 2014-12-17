@@ -1,15 +1,41 @@
-## Put comments here that give an overall description of what your
-## functions do
+## How to use this functions
+## > b<-matrix(1:4,2,2)
+## > a<-makeCacheMatrix(b)
+## > cacheSolve(a)
+## The basic assumption is that the input is a square matrix that is invertible.
 
-## Write a short comment describing this function
-
-makeCacheMatrix <- function(x = matrix()) {
-
+## This function gets a matrix and Creates a Matrix object in the cache. 
+## In addition it define 4 methods: set/get/setsolve/getsolve.
+ 
+makeCacheMatrix<- function(mtx = matrix()) {
+        result <- NULL
+        set <- function(mtxObj) {
+                mtx <<- mtxObj
+                result <<- NULL
+        }
+        get <- function() mtx
+        setsolve <- function(solve) result <<- solve
+        getsolve <- function() result
+        list(set = set, 
+             get = get,
+             setsolve = setsolve,
+             getsolve = getsolve)
 }
 
-
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+## This function calculates the Matrix Inversion (solve).
+## The function gets the object created by makeCacheMatrix. 
+## In case the matrix was already calculated, takes the result from the cache.
+## cacheSolve use the methods defined in makeCacheMatrix.
+ 
+cacheSolve<- function(mtx, ...) {
+        result <- mtx$getsolve()
+        if(!is.null(result)) {
+                message("getting cached data")
+                return(result)
+        }
+        data <- mtx$get()
+        result <- solve(data, ...)
+        mtx$setsolve(result)
+        result
 }
+
